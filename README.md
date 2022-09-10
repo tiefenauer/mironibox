@@ -20,6 +20,7 @@
   - https://www.hifiberry.com/shop/boards/miniamp/
   - https://www.hifiberry.com/docs/data-sheets/datasheet-miniamp/
   - https://www.hifiberry.com/docs/software/configuring-linux-3-18-x/
+- Debo Tast 1x1: https://secure.reichelt.com/ch/de/entwicklerboards-folientastatur-1x-1-ziffer-debo-tast-1x1-p266086.html?&nbc=1
 
 # Setting up developer environment:
 
@@ -37,3 +38,8 @@
 - append to /boot/config.txt: https://raspberrypi.stackexchange.com/questions/52083/bash-command-to-append-to-boot-config-txt
 - install python 3.9.2: https://linuxize.com/post/how-to-install-python-3-9-on-ubuntu-20-04/
 - switch between python versions: https://unix.stackexchange.com/questions/410579/change-the-python3-default-version-in-ubuntu
+- buttons: https://www.makeuseof.com/tag/add-button-raspberry-pi-project/
+- restore CTRL-ALT-DOWN in IntelliJ: https://stackoverflow.com/questions/47808160/intellij-idea-ctrlaltleft-shortcut-doesnt-work-in-ubuntu
+- play sound: https://brightersidetech.com/play-music-and-audio-file-in-python/
+- GPIO library: https://gpiozero.readthedocs.io/en/stable/index.html
+- GPIOZero double press: https://raspberrypi.stackexchange.com/questions/117390/gpiozero-how-to-double-button-press

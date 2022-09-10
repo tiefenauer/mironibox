@@ -1,6 +1,13 @@
-sudo apt install software-properties-common
 sudo apt update
 sudo apt upgrade
+
+sudo apt install software-properties-common
+# GPIO library
+sudo apt install python3-gpiozero
+# to play sound
+sudo apt-get install mplayer
+# pygame does not work on raspian
+# sudo apt-get install python3-pygame
 
 #############################
 # install/configure hardware

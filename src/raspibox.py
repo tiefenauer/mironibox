@@ -15,7 +15,7 @@ def write_output():
 
 
 def read_rfid():
-    while (True):
+    while True:
         id, text = reader.read()
         print(f'read RFID id={id}: {text}')
         player.set_playlist(text.strip())
@@ -24,10 +24,10 @@ def read_rfid():
 def read_buttons():
     from Buttons import Buttons
     buttons = Buttons()
-    buttons.events.on('next', lambda: player.on_next())
-    buttons.events.on('prev', lambda: player.on_prev())
-    buttons.events.on('rewind', lambda: player.on_rewind())
-    buttons.events.on('play', lambda: player.on_play())
+    buttons.events.on('next', lambda: player.next_track())
+    buttons.events.on('prev', lambda: player.previous_track())
+    buttons.events.on('rewind', lambda: player.rewind())
+    buttons.events.on('play', lambda: player.play())
 
 
 def run():

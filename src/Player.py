@@ -1,10 +1,7 @@
 from os import listdir
 from os.path import isfile, join
-from datetime import datetime, timedelta
-from pygame import mixer
-from signal import pause
 
-from Buttons import Buttons
+from pygame import mixer
 
 
 class Player:
@@ -36,25 +33,19 @@ class Player:
         mixer.music.play()
         self.current_track_number = track_number
 
-    def on_play(self):
-        print('on_play')
+    def play(self):
         if self.is_paused:
-            print("play/resume!")
             mixer.music.unpause()
             self.is_paused = False
         else:
-            print("pause!")
             mixer.music.pause()
             self.is_paused = True
 
-    def on_prev(self):
-        print('on_prev')
+    def previous_track(self):
         self.play_track(self.current_track_number - 1)
 
-    def on_rewind(self):
-        print('on_rewind')
+    def rewind(self):
         mixer.music.rewind()
 
-    def on_next(self):
-        print('on_next')
+    def next_track(self):
         self.play_track(self.current_track_number + 1)

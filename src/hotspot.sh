@@ -17,6 +17,7 @@ do
 	if ping -c 1 google.com >&/dev/null;
   then
     echo "Mironibox is connected to the internet"
+    exit 0
   else
     echo "Looks like Mironibox is not connected to the internet. Opening a WiFi hotspot"
     sudo wifi-connect --portal-ssid Mironibox

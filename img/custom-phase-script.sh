@@ -20,6 +20,13 @@ user_password=mironibox
 echo "Running Raspibox custom phase script with arguments:"
 echo $@
 echo "Custom params: user_name=$user_name, user_password=$user_password"
+current_dir=$(pwd)
+echo "Current directory is $current_dir"
+
+src_dir=$(dirname "$current_dir")/src/.
+home_dir="/home/$user_name"
+ssh_dir="$home_dir"/.ssh
+authorized_keys="$ssh_dir"/authorized_keys
 
 if [ $phase == "0" ]
 then
@@ -30,12 +37,13 @@ then
     logtoboth "* $pfx Phase 0"
 
 # INSERT Your Custom Phase 0 code here
-    current_dir=$(pwd)
-    echo "Current directory is $current_dir"
-    src_dir=$(dirname "$current_dir")/src/.
-    target_dir="$SDMPT/home/$user_name"
+    target_dir="$SDMPT"/"$home_dir"
     echo "Copying content of $src_dir to $target_dir"
     cp -a "$src_dir" "$target_dir"
+
+    echo "Copying SSH key (public) to $authorized_keys"
+    install -d -m 700 "$SDMPT"/"$ssh_dir"
+    cat /home/"$(logname)"/.ssh/mironibox.pub >> "$SDMPT"/$authorized_keys
 
     logtoboth "* $pfx Phase 0 Completed"
 
@@ -71,9 +79,21 @@ else
     logtoboth "Installing wifi-connect (https://github.com/balena-os/wifi-connect)"
     curl -L https://github.com/balena-io/wifi-connect/raw/master/scripts/raspbian-install.sh | bash -s -- -y
 
-    echo "Setting Samba password for user"
+    logtoboth "Installing OnOff-Shim (https://shop.pimoroni.com/products/onoff-shim?variant=41102600138)"
+    curl https://get.pimoroni.com/onoffshim | sudo -u "$(logname)" bash -s -- -y
+
+    logtoboth "Setting Samba password for user"
     (echo "$user_password"; echo "$user_password") | smbpasswd -s -a "$user_name"
+
+    logtoboth "Installing Python packages"
+    pip install -r "$home_dir"/requirements.txt
+
+    logtoboth "Setting permissions"
+    chmod +x "/home/$user_name/run.sh"
+    chmod 644 "$authorized_keys"
+    chown $user_name:$user_name "$authorized_keys"
 
     logfreespace "at end of $pfx Custom Phase post-install"
     logtoboth "* $pfx Custom Phase post-install Completed"
+
 fi

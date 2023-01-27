@@ -21,7 +21,7 @@ def playM4AwithMplayer():
     # player.loadfile('files/piano2.wav')
 
     # player = Player()
-    abspath = '/home/pi/raspibox/files/dieter_wiesenmann_matthias/12 Pfuus Guet.m4a'
+    abspath = '/home/mironibox/files/dieter_wiesenmann_matthias/12 Pfuus Guet.m4a'
     # player.loadfile(abspath)
 
     from subprocess import Popen, PIPE

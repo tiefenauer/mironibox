@@ -1,9 +1,50 @@
-# Setup
+# Mironibox
 
-1. Change hostname to raspibox
+Mironibox is an open source alternative to [Toniebox](https://tonies.com/). This repository contains the code that is needed to be run on a [Raspberry Pi](https://www.raspberrypi.com/). The hardware needs to be assembled by you (I will add a blog post later).  
+
+## Installation
+
+To create an image that can be run on a Raspberry Pi run the following script in a Linux terminal:
+
+```bash
+chmod +x ./flash.sh && ./flash.sh
+```
+
+The script will do the following:
+- Install tools needed to run the script
+- Download a RaspbianOS image
+- customize and pre-configure the downloaded RaspbianOS image containing all packages and tools needed for Mironibox
+
+## Prerequisites
+
+The scripts used in this `README.md` were tested on Ubuntu 22.04 LTS. The following tools are needed wnd will be installed if not yet present:
+
+- [SDM](https://github.com/gitbls/sdm): needed to create a customized RaspbianOS image
+- [Git](https://git-scm.com/): needed to checkout [a fork](https://github.com/tiefenauer/wifi-connect) of [WiFi Connect](https://github.com/balena-os/wifi-connect) containing customized UI files for the WiFi setup
+- [xz-utils](https://packages.ubuntu.com/bionic/xz-utils): needed to decompress the downloaded RaspbianOS image
+
+## Setup SD card
+Use [Raspberry Imager](https://www.raspberrypi.com/software/) to flash an SD card with RaspianOS using the following settings: 
+1. hostname:  `mironibox`
+1. Enable SSH 
+   2. Allow public-key authentication only: provide key file from your computer
+1. Set username and password (must be done to skip first run wizard)
+   2. username: pi
+   3. password: something you can remember
+1. Configure wireless LAN
+   2. Enter SSID and password for your WiFi
+1. Set locale settings
+   2. Time zone: Where you live
+   3. keyboard layout: whatever you use
+
+3. boot Raspberry pi (can take a bit on first boot)
+4. Optional: find Raspberry IP
+   5. on host computer: https://askubuntu.com/questions/82480/how-to-see-all-computers-connected-to-a-network
+   6. install arp-scan: `sudo apt-get update -y && sudo apt-get install -y arp-scan`
 2. Create key file and copy to raspi: https://serverfault.com/questions/241588/how-to-automate-ssh-login-with-password
-3. ssh login: `ssh pi@raspibox`
-4. create Samba share:
+3. ssh login: `ssh pi@mironibox`
+4. Run gpiotest: https://elinux.org/R-Pi_Troubleshooting#Testing
+5. create Samba share: YOU MUST SET A PASSWORD OTHERWISE YOU WILL NOT BE ABLE TO CONNECT!!!!
    5. https://www.elektronik-kompendium.de/sites/raspberry-pi/2007071.htm
    5. https://ubuntu.com/tutorials/install-and-configure-samba#1-overview
 5. check GPIO: http://wiringpi.com/download-and-install/
@@ -21,6 +62,7 @@
   - https://www.hifiberry.com/docs/data-sheets/datasheet-miniamp/
   - https://www.hifiberry.com/docs/software/configuring-linux-3-18-x/
 - Debo Tast 1x1: https://secure.reichelt.com/ch/de/entwicklerboards-folientastatur-1x-1-ziffer-debo-tast-1x1-p266086.html?&nbc=1
+- PiGlow: https://www.play-zone.ch/de/piglow-led-addon-fur-raspberry-pi.html
 
 # Setting up developer environment:
 

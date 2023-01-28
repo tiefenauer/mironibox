@@ -1,3 +1,7 @@
+<div align="center">
+    <img height="200" src="https://github.com/tiefenauer/mironibox/raw/main/assets/logo/png/logo-no-background.png" />
+</div>
+
 # Mironibox
 
 Mironibox is an open source alternative to [Toniebox](https://tonies.com/). This repository contains the code that is needed to be run on a [Raspberry Pi](https://www.raspberrypi.com/). The hardware needs to be assembled by you (I will add a blog post later).  

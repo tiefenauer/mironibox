@@ -4,16 +4,15 @@
 
 # Mironibox
 
-Mironibox is an open source alternative to [Toniebox](https://tonies.com/). This repository contains the code that is needed to be run on a [Raspberry Pi](https://www.raspberrypi.com/). The hardware needs to be assembled by you (I will add a blog post later).  
+Mironibox is an open source alternative to [Toniebox](https://tonies.com/). It is intended to be run on a [Raspberry Pi](https://www.raspberrypi.com/). This repository contains the software, the hardware (the actual Mironibox) needs to be assembled by you (I will add a blog post later).  
 
 ## Installation
-
-To create an image that can be run on a Raspberry Pi run the following script in a Linux terminal:
 
 ```bash
 chmod +x ./flash.sh && ./flash.sh
 ```
 
+### Script details
 The script will do the following:
 - Install tools needed to run the script
 - Download a RaspbianOS image
@@ -89,3 +88,14 @@ Use [Raspberry Imager](https://www.raspberrypi.com/software/) to flash an SD car
 - play sound: https://brightersidetech.com/play-music-and-audio-file-in-python/
 - GPIO library: https://gpiozero.readthedocs.io/en/stable/index.html
 - GPIOZero double press: https://raspberrypi.stackexchange.com/questions/117390/gpiozero-how-to-double-button-press
+
+# Images
+- Mironibox logo: https://www.designevo.com/apps/logo/?name=adorable-orange-toy-bear
+- Mironibox logo: logo.com
+
+# Sounds
+- wifi-success.wav: https://freesound.org/people/JustInvoke/sounds/446111/
+- wifi-failure.wav: https://freesound.org/people/OwlStorm/sounds/404767/
+- attention.wav: https://freesound.org/people/wowa34/sounds/619256/
+
+- TTS: https://voicemaker.in/

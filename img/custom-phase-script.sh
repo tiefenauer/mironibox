@@ -1,4 +1,6 @@
 #!/bin/bash
+#set -x
+
 #
 # Sample sdm Custom Phase script
 #
@@ -14,36 +16,44 @@ function loadparams() {
 #
 phase=$1
 pfx="$(basename $0)"     #For messages
-user_name=mironibox
-user_password=mironibox
 
-echo "Running Raspibox custom phase script with arguments:"
-echo $@
-echo "Custom params: user_name=$user_name, user_password=$user_password"
+loadparams
+user_name=$myuser
+user_password=$passworduser
 current_dir=$(pwd)
 echo "Current directory is $current_dir"
 
-src_dir=$(dirname "$current_dir")/src/.
-home_dir="/home/$user_name"
-ssh_dir="$home_dir"/.ssh
-authorized_keys="$ssh_dir"/authorized_keys
+local_src=$(dirname "$current_dir")/src/.
+local_home="/home/$user_name"
+remote_home="$SDMPT$local_home"
+
+local_hotspot_ui=$(dirname "$current_dir")/wifi-connect/ui/build
+remote_hotspot_ui="$remote_home/hotspot-ui"
+
+remote_authorized_keys=$remote_home/.ssh/$local_authorized_keys
 
 if [ $phase == "0" ]
 then
     #
     # In Phase 0 all references to directories in the image must be preceded by $SDMPT
     #
-    loadparams
     logtoboth "* $pfx Phase 0"
 
 # INSERT Your Custom Phase 0 code here
-    target_dir="$SDMPT"/"$home_dir"
-    echo "Copying content of $src_dir to $target_dir"
-    cp -a "$src_dir" "$target_dir"
+    echo "Checking out latest version of hotspot UI"
+    pushd ../wifi-connect/
+    git checkout master
+    git pull
+    popd
 
-    echo "Copying SSH key (public) to $authorized_keys"
-    install -d -m 700 "$SDMPT"/"$ssh_dir"
-    cat /home/"$(logname)"/.ssh/mironibox.pub >> "$SDMPT"/$authorized_keys
+    echo "Copying content of $local_src to $remote_home"
+    cp -a $local_src $remote_home
+    echo "Copying of $local_hotspot_ui to $remote_hotspot_ui"
+    cp -a $local_hotspot_ui $remote_hotspot_ui
+
+    echo "Copying SSH key (public) to $remote_authorized_keys"
+    install -d -m 700
+    cat /home/"$(logname)"/.ssh/mironibox.pub >> $remote_authorized_keys
 
     logtoboth "* $pfx Phase 0 Completed"
 
@@ -52,7 +62,6 @@ then
     #
     # Phase 1 (in nspawn)
     #
-    loadparams
     logtoboth "* $pfx Phase 1"
     logfreespace "at start of $pfx Phase 1"
     #
@@ -67,7 +76,6 @@ else
     #
     # Post-install edits
     #
-    loadparams
     logtoboth "* $pfx Custom Phase post-install"
     logfreespace "at start of $pfx Custom Phase post-install"
     #
@@ -86,12 +94,12 @@ else
     (echo "$user_password"; echo "$user_password") | smbpasswd -s -a "$user_name"
 
     logtoboth "Installing Python packages"
-    pip install -r "$home_dir"/requirements.txt
+    pip install -r $remote_home/requirements.txt
 
     logtoboth "Setting permissions"
     chmod +x "/home/$user_name/run.sh"
-    chmod 644 "$authorized_keys"
-    chown $user_name:$user_name "$authorized_keys"
+    chmod 644 $remote_authorized_keys
+    chown $user_name:$user_name $remote_authorized_keys
 
     logfreespace "at end of $pfx Custom Phase post-install"
     logtoboth "* $pfx Custom Phase post-install Completed"

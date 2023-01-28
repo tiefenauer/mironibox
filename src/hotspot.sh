@@ -34,23 +34,44 @@ echo "Checking WiFi status:"
 nmcli radio wifi
 
 first_run=0
+connection_changed=1
+
+sec_start=`date +%s`
 
 while true
 do
-	if ping -c 1 google.com >&/dev/null;
+  if ping -c 1 google.com >&/dev/null;
   then
     echo "Mironibox is connected to the internet"
-    mplayer $user_home/audio/wifi-success.wav
+    # wait a few seconds for audio to be initialized (might interfere with startup sound)
+    sleep 5
+    if [ $connection_changed -eq 0 ]
+    then
+      mplayer $user_home/audio/wifi-success.wav &
+    else
+      mplayer $user_home/audio/i18n/en/wifi-connected.wav &
+    fi
     exit 0
   else
+    sec_now=`date +%s`
+    sec_elapsed=`expr ${sec_now} - ${sec_start}`
+
+    if [ $sec_elapsed -lt 30 ]
+    then
+      # Wait for a few seconds before opening an AP because Mironibox might need some time to connect to a previously established connection
+      # If WiFi-Connect is started before Mironibox had a chance to connect, it will be trapped forever in AP mode since the default for ACTIVITY_TIMEOUT is infinity (good)
+      continue
+    fi
+
     if [ $first_run -ne 0 ]
     then
-      mplayer $user_home/audio/wifi-failure.wav
+      mplayer $user_home/audio/wifi-failure.wav &
     fi
     echo "Looks like Mironibox is not connected to the internet. Opening a WiFi hotspot"
-    mplayer $user_home/audio/i18n/en/please_connect_to_hotspot.mp3
+    mplayer $user_home/audio/i18n/en/please_connect_to_hotspot.mp3 &
     sudo wifi-connect --portal-ssid Mironibox --ui-directory $user_home/hotspot-ui
     first_run=1
+    connection_changed=0
   fi
-	sleep 5
+  sleep 1
 done

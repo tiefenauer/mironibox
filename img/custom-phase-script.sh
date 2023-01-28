@@ -23,14 +23,8 @@ user_password=$passworduser
 current_dir=$(pwd)
 echo "Current directory is $current_dir"
 
-local_src=$(dirname "$current_dir")/src/.
-local_home="/home/$user_name"
-remote_home="$SDMPT$local_home"
-
-local_hotspot_ui=$(dirname "$current_dir")/wifi-connect/ui/build
-remote_hotspot_ui="$remote_home/hotspot-ui"
-
-remote_authorized_keys=$remote_home/.ssh/$local_authorized_keys
+src_dir=$(dirname "$current_dir")/src/.
+user_home="/home/$user_name"
 
 if [ $phase == "0" ]
 then
@@ -40,17 +34,31 @@ then
     logtoboth "* $pfx Phase 0"
 
 # INSERT Your Custom Phase 0 code here
+    user_home_remote="$SDMPT$user_home"
+
+    #-----------------------------------------------
+    # Hotspot UI
+    #-----------------------------------------------
+    hotspot_ui_dir_local=$(dirname "$current_dir")/wifi-connect/ui/build
+    hotspot_ui_dir_remote="$user_home_remote/hotspot-ui"
     echo "Checking out latest version of hotspot UI"
     pushd ../wifi-connect/
     git checkout master
     git pull
     popd
+    echo "Copying of $hotspot_ui_dir_local to $hotspot_ui_dir_remote"
+    cp -a $hotspot_ui_dir_local $hotspot_ui_dir_remote
 
-    echo "Copying content of $local_src to $remote_home"
-    cp -a $local_src $remote_home
-    echo "Copying of $local_hotspot_ui to $remote_hotspot_ui"
-    cp -a $local_hotspot_ui $remote_hotspot_ui
+    #-----------------------------------------------
+    # Mironibox files
+    #-----------------------------------------------
+    echo "Copying content of $src_dir to $user_home_remote"
+    cp -a $src_dir $user_home_remote
 
+    #-----------------------------------------------
+    # SSH files
+    #-----------------------------------------------
+    remote_authorized_keys=$user_home_remote/.ssh/$local_authorized_keys
     echo "Copying SSH key (public) to $remote_authorized_keys"
     install -d -m 700
     cat /home/"$(logname)"/.ssh/mironibox.pub >> $remote_authorized_keys
@@ -94,12 +102,12 @@ else
     (echo "$user_password"; echo "$user_password") | smbpasswd -s -a "$user_name"
 
     logtoboth "Installing Python packages"
-    pip install -r $remote_home/requirements.txt
+    pip install -r $user_home/requirements.txt
 
     logtoboth "Setting permissions"
     chmod +x "/home/$user_name/run.sh"
-    chmod 644 $remote_authorized_keys
-    chown $user_name:$user_name $remote_authorized_keys
+    chmod 644 $local_authorized_keys
+    chown $user_name:$user_name $local_authorized_keys
 
     logfreespace "at end of $pfx Custom Phase post-install"
     logtoboth "* $pfx Custom Phase post-install Completed"
